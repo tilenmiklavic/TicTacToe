@@ -1,7 +1,16 @@
 import java.util.Scanner;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 
 class TicTac {
     
+    public static void make_gui() {
+        MyFrame.set_listeners();
+        MyFrame.add_to_frame();
+        MyFrame.set_frame();
+    }
+
     public static void print_field(char[][] field) {
 
         System.out.println();
@@ -14,7 +23,7 @@ class TicTac {
                 } else {
                     System.out.print(field[i][j]);
                 }
-                
+
                 if (j != 2) {
                     System.out.print(" | ");
                 }
@@ -28,24 +37,43 @@ class TicTac {
         System.out.println();
     }
 
-    public static char[][] user_turn(char[][] field, Scanner sc) {
+    public static void user_input_demo(int field_num) {
 
-        System.out.println("Your turn: [1-9]");
+        char[][] field = Field.get_field();
 
-        String input = sc.nextLine();
-        int field_num = Integer.parseInt(input);
-
+        // check if the requested field is blank
         if (!valid_input(field, field_num)) {
-            return user_turn(field, sc);
+            return;
         }
 
+        // get row and column number from field id and change table 
         int row = (field_num-1) / 3;
-        int collumn = (field_num-1) % 3;
+        int column = (field_num-1) % 3;
 
-        field[row][collumn] = 'P';
-        print_field(field);
+        field[row][column] = 'P';
+        MyFrame.change_field(field_num-1, 'P');
 
-        return field;
+        if (win_chech(field) == 'P') {
+            System.out.println("Zmagali ste!");
+            System.exit(1);
+        } else if (win_chech(field) == 'N') {
+            System.out.println("Neodloceno!");
+            System.exit(1);
+        }
+
+        // get the computer response 
+        field = computer_turn_demo(field);
+
+        if (win_chech(field) == 'C') {
+            System.out.println("Zmagal je racunalnik!");
+            System.exit(1);
+        } else if (win_chech(field) == 'N') {
+            System.out.println("Neodloceno!");
+            System.exit(1);
+        }
+
+        // update the field view
+        Field.update_field(field);
     }
 
     public static boolean valid_input(char[][] field, int field_num) {
@@ -59,27 +87,7 @@ class TicTac {
         return false;
     }
 
-    public static char[][] computer_turn(char[][] field) {
-
-        // Demo 
-        // TODO
-
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                if (field[i][j] == 'B') {
-                    field[i][j] = 'C';
-
-                    print_field(field);
-                    return field;
-                }
-            }
-        }
-
-        return null;
-    }
-
     public static char[][] computer_turn_demo(char[][] field) {
-        // TODO
 
         // naredimo novo tabelo ki bo vsebovala vrednosti zmag
         int[][] values = {{0,0,0},
@@ -118,6 +126,7 @@ class TicTac {
                     if (field[i][j] == 'B') {
                         field[i][j] = 'C';
                         System.out.println("Racunalnik se je odlocil za "+ i + " "+ j);
+                        MyFrame.change_field(i*3 + j, 'C');
                         print_field(field);
                         return field;
                     }
@@ -126,6 +135,7 @@ class TicTac {
         }
 
         field[i_demo][j_demo] = 'C';
+        MyFrame.change_field(i_demo*3 + j_demo, 'C');
         System.out.println("Racunalnik se je odlocil za "+ i_demo + " "+ j_demo);
         print_field(field);
         return field;
@@ -218,33 +228,8 @@ class TicTac {
         return 'N';
     }
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        char[][] field = {{'B', 'B', 'B'},
-                          {'B', 'B', 'B'},
-                          {'B', 'B', 'B'}};
 
-        while (true) {
-            field = user_turn(field, sc);
-
-            if (!(win_chech(field) == 'B')) {
-                break;
-            }
-
-            field = computer_turn_demo(field);
-
-            if (!(win_chech(field) == 'B')) {
-                break;
-            }
-        }
-
-        if (win_chech(field) == 'P') {
-            System.out.println("Zmagali ste!");
-        } else if (win_chech(field) == 'C') {
-            System.out.println("Zmagal je racunalnik!");
-        } else if (win_chech(field) == 'N') {
-            System.out.println("Neodloceno! Poskusi ponovno");
-        } else {
-            System.out.println("Neodloceno!");
-        }
+        make_gui();
+        Scanner sc = new Scanner(System.in);               
     }
 }
