@@ -15,4 +15,13 @@ class Field {
             }
         }
     }
+
+    public static void reset_field() {
+
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                field[i][j] = 'B';
+            }
+        }
+    }
 }

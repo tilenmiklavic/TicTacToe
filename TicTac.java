@@ -6,14 +6,6 @@ import java.awt.*;
 import java.awt.event.*;
 
 class TicTac {
-    
-    public static void make_gui() {
-        //MyFrame.set_listeners();
-        //MyFrame.add_to_frame();
-        //MyFrame.set_frame();
-
-        new MyFrame();
-    }
 
     public static void print_field(char[][] field) {
 
@@ -194,7 +186,6 @@ class TicTac {
     }
     public static void main(String[] args) {
 
-        make_gui();
-        //Scanner sc = new Scanner(System.in);               
+        new MyFrame();
     }
 }
