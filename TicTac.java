@@ -43,6 +43,64 @@ class TicTac {
 
         return false;
     }
+
+    public static void print_array(int[][] field) {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                System.out.print(field[i][j] + " ");
+            }
+
+            System.out.println();
+        }
+    }
+
+    public static void print_array_char(char[][] field) {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                System.out.print(field[i][j] + " ");
+            }
+
+            System.out.println();
+        }
+
+        System.out.println();
+        System.out.println();
+    }
+
+    public static int first_move(char[][] field) {
+       /*
+        *   Preverimo nevarnost neposredne naslednje uporabnikove poteze    
+        */
+
+        // preverimo ce lahko v naslednji potezi zmagamo 
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (field[i][j] == 'B') {
+                    char[][] field_copy = copy_array(field);
+                    field_copy[i][j] = 'P';
+
+                    if (win_chech(field_copy) == 'C') {
+                        return (i*3 + j);
+                    }
+                }    
+            }
+        }
+
+        // pregledamo ce lahko uporabnik v naslednji potezi zmaga 
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (field[i][j] == 'B') {
+                    char[][] field_copy = copy_array(field);
+                    field_copy[i][j] = 'P';
+
+                    if (win_chech(field_copy) == 'P') {
+                        return (i*3 + j);
+                    }
+                }    
+            }
+        }
+        return -1;
+    }
     
     public static char[][] computer_turn_demo(char[][] field) {
 
@@ -51,6 +109,21 @@ class TicTac {
                           {0,0,0},
                           {0,0,0}};
 
+        // preverimo neposredno nevarnost naslednje poteze 
+        // ustrezno ukrepamo 
+        
+        int first_move = first_move(field);
+        System.out.println("First move " + first_move);
+        if (first_move != -1) {
+            System.out.println("Nevarnost");
+            int i = first_move / 3;
+            int j = first_move % 3;
+
+            field[i][j] = 'C';
+            return field;
+        }
+        
+
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
 
@@ -58,31 +131,38 @@ class TicTac {
                 if (field[i][j] == 'B') {
                     char[][] field_copy = copy_array(field);
                     field_copy[i][j] = 'C';
-                    values[i][j] = computer_turn_demo(field_copy, 'P');
+                    values[i][j] = computer_turn_demo(field_copy, 'P', 1);
                 }    
             }
         }
 
+        print_array(values);
+
         int i_demo = 0;
         int j_demo = 0;
-        int max_value = 0;
+        int max_value = Integer.MIN_VALUE;
 
+        // dolocimo katero polje je najbolj donosno
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 if (values[i][j] > max_value) {
-                    i_demo = i;
-                    j_demo = j;
-                    max_value = values[i][j];
+                    if (field[i][j] == 'B') {
+                        i_demo = i;
+                        j_demo = j;
+                        max_value = values[i][j];
+                    }    
                 }
             }
         }
 
-        if (max_value == 0) {
+        // ce ni nobeno polje dominantno uporabimo prvo blank polje 
+        if (max_value == Integer.MIN_VALUE) {
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 3; j++) {
                     if (field[i][j] == 'B') {
                         field[i][j] = 'C';
                         System.out.println("Racunalnik se je odlocil za "+ i + " "+ j);
+                        System.out.println("Ni druge izbire");
                         //MyFrame.change_field(i*3 + j, 'C');
                         print_field(field);
                         return field;
@@ -91,21 +171,21 @@ class TicTac {
             }
         }
 
+        // drugace uporabimo polje ki je dominantno 
         field[i_demo][j_demo] = 'C';
-        //MyFrame.change_field(i_demo*3 + j_demo, 'C');
         System.out.println("Racunalnik se je odlocil za "+ i_demo + " "+ j_demo);
         print_field(field);
         return field;
     }
 
-    private static int computer_turn_demo(char[][] field, char poteza) {
+    private static int computer_turn_demo(char[][] field, char poteza, int niz) {
 
         // preverimo ce je igre ze konec
         // v tem primeru koncamo rekurzijo 
         if (win_chech(field) == 'C') {
-            return 1;
+            return (10 - niz);
         } else if (win_chech(field) == 'P') {
-            return 0;
+            return (10 - niz);
         } else if (win_chech(field) == 'N') {
             return 0;
         }
@@ -126,7 +206,7 @@ class TicTac {
                 if (field[i][j] == 'B') {
                     char[][] field_copy = copy_array(field);
                     field_copy[i][j] = poteza;
-                    value += computer_turn_demo(field_copy, naslednja_poteza);
+                    value += computer_turn_demo(field_copy, naslednja_poteza, niz + 1);
                 }
             }
         }
@@ -155,23 +235,23 @@ class TicTac {
 
         // check rows
         for (int i = 0; i < 3; i++) {
-            if (field[i][0] == field[i][1] &&  field[i][1] == field[i][2]) {
+            if (field[i][0] == field[i][1] &&  field[i][1] == field[i][2] && field[i][0] != 'B') {
                 return field[i][0];
             }
         }
 
         // check collumns
         for (int i = 0; i < 3; i++) {
-            if (field[0][i] == field[1][i] && field[1][i] == field[2][i]) {
+            if (field[0][i] == field[1][i] && field[1][i] == field[2][i] && field[0][i] != 'B') {
                 return field[0][i];
             }
         }
 
-        if (field[0][0] == field[1][1] && field[1][1] == field[2][2]) {
+        if (field[0][0] == field[1][1] && field[1][1] == field[2][2] && field[0][0] != 'B') {
             return field[0][0];
         }
 
-        if (field[2][0] == field[1][1] && field[1][1] == field[0][2]) {
+        if (field[2][0] == field[1][1] && field[1][1] == field[0][2] && field[2][0] != 'B') {
             return field[2][0];
         }
 
