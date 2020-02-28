@@ -54,19 +54,6 @@ class TicTac {
         }
     }
 
-    public static void print_array_char(char[][] field) {
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                System.out.print(field[i][j] + " ");
-            }
-
-            System.out.println();
-        }
-
-        System.out.println();
-        System.out.println();
-    }
-
     public static int first_move(char[][] field) {
        /*
         *   Preverimo nevarnost neposredne naslednje uporabnikove poteze    
@@ -77,7 +64,7 @@ class TicTac {
             for (int j = 0; j < 3; j++) {
                 if (field[i][j] == 'B') {
                     char[][] field_copy = copy_array(field);
-                    field_copy[i][j] = 'P';
+                    field_copy[i][j] = 'C';
 
                     if (win_chech(field_copy) == 'C') {
                         return (i*3 + j);
@@ -111,22 +98,20 @@ class TicTac {
 
         // preverimo neposredno nevarnost naslednje poteze 
         // ustrezno ukrepamo 
-        
         int first_move = first_move(field);
-        System.out.println("First move " + first_move);
         if (first_move != -1) {
-            System.out.println("Nevarnost");
             int i = first_move / 3;
             int j = first_move % 3;
 
             field[i][j] = 'C';
+            System.out.println("Racunalnik se je odlocil za "+ i + " "+ j);
+            print_field(field);
             return field;
         }
         
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-
                 // za vsako polje v tabeli preverimo koliko potencialnih zmag drzi 
                 if (field[i][j] == 'B') {
                     char[][] field_copy = copy_array(field);
@@ -135,8 +120,6 @@ class TicTac {
                 }    
             }
         }
-
-        print_array(values);
 
         int i_demo = 0;
         int j_demo = 0;

@@ -147,6 +147,18 @@ public class MyFrame extends JFrame implements ActionListener {
         }
     }
 
+    public static void disable_buttons() {
+        for (int i = 0; i < 9; i++) {
+            buttons[i].setEnabled(false);
+        }
+    }
+
+    public static void enable_buttons() {
+        for (int i = 0; i < 9; i++) {
+            buttons[i].setEnabled(true);
+        }
+    }
+
     public static void win(char winner) {
         if (winner == 'P') {
             text.setText("Zmagali ste!");
@@ -155,13 +167,14 @@ public class MyFrame extends JFrame implements ActionListener {
         } else {
             text.setText("Neodloceno!");
         }
-
+        disable_buttons();
         reset.setText("Poskusi ponovno");
     }
 
     public static void reset_game() {
         Field.reset_field();
         reset_buttons();
+        enable_buttons();
         text.setText("");
         reset.setText("Resetiraj");
 
