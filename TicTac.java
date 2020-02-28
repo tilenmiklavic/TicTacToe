@@ -1,3 +1,5 @@
+package TicTacToe;
+
 import java.util.Scanner;
 import javax.swing.*;
 import java.awt.*;
@@ -6,9 +8,11 @@ import java.awt.event.*;
 class TicTac {
     
     public static void make_gui() {
-        MyFrame.set_listeners();
-        MyFrame.add_to_frame();
-        MyFrame.set_frame();
+        //MyFrame.set_listeners();
+        //MyFrame.add_to_frame();
+        //MyFrame.set_frame();
+
+        new MyFrame();
     }
 
     public static void print_field(char[][] field) {
@@ -37,45 +41,6 @@ class TicTac {
         System.out.println();
     }
 
-    public static void user_input_demo(int field_num) {
-
-        char[][] field = Field.get_field();
-
-        // check if the requested field is blank
-        if (!valid_input(field, field_num)) {
-            return;
-        }
-
-        // get row and column number from field id and change table 
-        int row = (field_num-1) / 3;
-        int column = (field_num-1) % 3;
-
-        field[row][column] = 'P';
-        MyFrame.change_field(field_num-1, 'P');
-
-        if (win_chech(field) == 'P') {
-            System.out.println("Zmagali ste!");
-            System.exit(1);
-        } else if (win_chech(field) == 'N') {
-            System.out.println("Neodloceno!");
-            System.exit(1);
-        }
-
-        // get the computer response 
-        field = computer_turn_demo(field);
-
-        if (win_chech(field) == 'C') {
-            System.out.println("Zmagal je racunalnik!");
-            System.exit(1);
-        } else if (win_chech(field) == 'N') {
-            System.out.println("Neodloceno!");
-            System.exit(1);
-        }
-
-        // update the field view
-        Field.update_field(field);
-    }
-
     public static boolean valid_input(char[][] field, int field_num) {
         int row = (field_num-1) / 3;
         int collumn = (field_num-1) % 3;
@@ -86,7 +51,7 @@ class TicTac {
 
         return false;
     }
-
+    
     public static char[][] computer_turn_demo(char[][] field) {
 
         // naredimo novo tabelo ki bo vsebovala vrednosti zmag
@@ -126,7 +91,7 @@ class TicTac {
                     if (field[i][j] == 'B') {
                         field[i][j] = 'C';
                         System.out.println("Racunalnik se je odlocil za "+ i + " "+ j);
-                        MyFrame.change_field(i*3 + j, 'C');
+                        //MyFrame.change_field(i*3 + j, 'C');
                         print_field(field);
                         return field;
                     }
@@ -135,7 +100,7 @@ class TicTac {
         }
 
         field[i_demo][j_demo] = 'C';
-        MyFrame.change_field(i_demo*3 + j_demo, 'C');
+        //MyFrame.change_field(i_demo*3 + j_demo, 'C');
         System.out.println("Racunalnik se je odlocil za "+ i_demo + " "+ j_demo);
         print_field(field);
         return field;
@@ -230,6 +195,6 @@ class TicTac {
     public static void main(String[] args) {
 
         make_gui();
-        Scanner sc = new Scanner(System.in);               
+        //Scanner sc = new Scanner(System.in);               
     }
 }

@@ -1,3 +1,5 @@
+package TicTacToe;
+
 class Field {
     static char[][] field = { { 'B', 'B', 'B' }, { 'B', 'B', 'B' }, { 'B', 'B', 'B' } };
 
